@@ -2,6 +2,7 @@
 // import "../stylesheets/app.css";
 
 // Import libraries we need.
+import crypto from 'crypto';
 import { default as Web3} from 'web3';
 import { default as contract } from 'truffle-contract';
 
@@ -10,12 +11,13 @@ import bank_artifacts from '../../build/contracts/Mortgage.json';
 var Mortgage = contract(bank_artifacts);
 var account;
 var wtoE;
-var GAS_AMOUNT = 90000000;
-var BASE_URL = 'https://sh3r.tech/files/';
+var GAS_AMOUNT = 1400000;
+var BASE_URL = '/files/';
 var md5 = require('md5');
+var hash = "";
 
 window.verifyData = function() {
-  var hash = $('#file-hash').val();
+
   var link = BASE_URL + hash + '.pdf';
   document.getElementById('pdfRenderer').src = link;
   Mortgage.deployed().then(function(contractInstance) {
@@ -39,23 +41,41 @@ window.verifyData = function() {
   document.getElementById('mortgageDetails').style.visibility = 'visible';
 }
 
-window.addData = function(data) {
-  var hash = md5(data);
+window.addData = function() {
+    console.log(hash);
+
   Mortgage.deployed().then(function(contractInstance) {
     contractInstance.addData(hash,{gas: GAS_AMOUNT, from: account}).then(function(result) {
       console.log("HASH ADDED SUCCESSFULLY : ",hash);
     });
-  });  
+  });
 }
 
-//For testing purpose only
+
 function getHashFromUrl() {
   var url = location.href;
   if(url.indexOf('?') == -1)
     return;
-  var hash = url.split('?')[1].split('&')[0].split('=')[1]
-  $('#file-hash').val(hash);
+  hash = url.split('?')[1].split('&')[0].split('=')[1]
+
   verifyData();
+}
+
+window.calculateHash = function() {
+    var file = document.querySelector('input[type=file]').files[0];
+    console.log(file);
+    const reader = new FileReader();
+    reader.onload = () => {
+        const fileAsBinaryString = reader.result;
+        const hashValue = crypto.createHash('md5').update(fileAsBinaryString).digest("hex");
+        // Assigning to a global variable
+        hash = hashValue;
+    };
+    reader.onabort = () => console.log('file reading was aborted');
+    reader.onerror = () => console.log('file reading has failed');
+
+    reader.readAsBinaryString(file);
+
 }
 
 $( document ).ready(function() {

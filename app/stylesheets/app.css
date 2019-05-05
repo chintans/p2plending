@@ -50,3 +50,8 @@ h3 {
 .hint {
   color: #666;
 }
+
+#container {
+  background-color: black;
+
+}

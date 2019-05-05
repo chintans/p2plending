@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Verify Mortgage - Crowd Bank</title>
+    <title>Verify Mortgage - P2P Lending</title>
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
     <!-- Custom fonts for this template -->
@@ -21,7 +21,7 @@
     <!-- Navbar -->
     <nav class="navbar navbar-inverse bg-inverse">
       <a class="navbar-brand text-white" href="/">
-        Crowd Bank
+        P2P Lending
       </a>
     </nav>
 
@@ -29,14 +29,16 @@
     <header class="intro-header">
       <div class="container">
         <div class="intro-message text-center" style="margin-top:10px;">
-          <h2>Welcome to Crowd Bank - Central Mortgage Verification System</h2>
+          <h2>P2P Lending platform - Central Mortgage Verification System</h2>
           <!--<h4></h4>-->
           <hr class="intro-divider">
           <div class="row text-center">
             <div class="col-sm-3"></div>
             <div class="col-sm-6">
-              <input type="text" class="form-control" id="file-hash" name="hash" placeholder="Hash of File to verify" value="">
-              <button type="submit" class="btn btn-default" onclick="verifyData()">Verify Now</button>
+                <input type="file" id="fileinput" onchange="calculateHash()">
+
+              <button type="submit" class="btn btn-default" onclick="addData()">Verify Now</button>
+
             </div>
           </div>
           <hr class="intro-divider">

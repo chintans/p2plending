@@ -15,10 +15,10 @@ var wtoE;
 var GAS_AMOUNT = 1400000;
 
 var LOANSTATE = {
-  0 : "ACCEPTING",
+  0 : "OPEN",
   1 : "LOCKED",
-  2 : "COMPLETED SUCCESSFUL",
-  3 : "COMPLETION FAILED"
+  2 : "SUCCESSFUL",
+  3 : "FAILED"
 }
 var LOANSTATECLASS = {
   0 : "primary",
@@ -90,13 +90,13 @@ window.showLoanDetails = function(loanId) {
       {
         contractInstance.getRepayValue.call(loanId).then(function(result) {
           $('#loan-repay-amount').html(result.valueOf()/wtoE + " eth");
-        });        
+        });
       }
       else
       {
         contractInstance.getRepayValue.call(loanId).then(function(result) {
           $('#loan-repay-amount').html("-");
-        });        
+        });
       }
       var proposalCount = (result[4].valueOf());
       $('#loan-proposal-count').html(proposalCount);
@@ -144,6 +144,8 @@ function showPastLoans() {
   CrowdBank.deployed().then(function(contractInstance) {
     console.log("CONTRACT : ",contractInstance);
     console.log(account);
+
+    // Fetching total loan count
     contractInstance.totalLoansBy.call(account).then(function(loanCount) {
       console.log("GOT NUMBER OF LOANS : ",loanCount.valueOf());
       if(loanCount.valueOf() !== 0)
@@ -159,7 +161,7 @@ function showPastLoans() {
               <td>'+LOANSTATE[el[0].valueOf()]+'</td>\
               <td>'+new Date(el[1].valueOf()*1000).toDateString()+'</td>\
               <td>'+el[2].valueOf()/wtoE+' eth</td>\
-              <td><a target="_blank" href="http://mortgage.crowdbank.gov.in:8080/verify.html?hash='+web3.toUtf8(el[5].valueOf())+'">Link</a></td>\
+              <td><a target="_blank" href="/verify.html?hash='+web3.toUtf8(el[5].valueOf())+'">Link</a></td>\
               <td>'+el[3].valueOf()/wtoE+' eth</td>\
               <td><button class="btn btn-default" onclick="showLoanDetails('+el[4].valueOf()+')">Details</button></td>\
               <td>'+LOANSTATEACTION(el[0].valueOf(),el[4].valueOf())+'</td>\
@@ -173,7 +175,7 @@ function showPastLoans() {
         displayForm();
       }
    });
-  });  
+  });
 }
 
 function getMortgageDetails() {
@@ -254,7 +256,6 @@ $( document ).ready(function() {
 
 /*
 TO DO
-2. Repay Amount - Proposal Details
-3. Show Borrower Address in Proposal Details
-4. Write about convincing people whom banks do not trust
+1. Show Borrower Address in Proposal Details
+2. Write about convincing people which banks do not trust
 */

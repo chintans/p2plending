@@ -15,15 +15,15 @@ let loanList = [];
 var wtoE;
 
 var PROPOSALSTATE = {
-  0 : "WAITING",
+  0 : "OPEN",
   1 : "ACCEPTED",
   2 : "REPAID"
 }
 var LOANSTATE = {
-  0 : "ACCEPTING",
+  0 : "OPEN",
   1 : "LOCKED",
-  2 : "COMPLETED SUCCESSFUL",
-  3 : "COMPLETION FAILED"
+  2 : "SUCCESSFUL",
+  3 : "FAILED"
 }
 var LOANSTATECLASS = {
   0 : "primary",
