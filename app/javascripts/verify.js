@@ -4,7 +4,7 @@
 // Import libraries we need.
 import crypto from 'crypto';
 import { default as Web3} from 'web3';
-import { default as contract } from 'truffle-contract';
+import { default as contract } from '@truffle/contract';
 
 import bank_artifacts from '../../build/contracts/Mortgage.json';
 
@@ -43,9 +43,10 @@ window.verifyData = function() {
 
 window.addData = function() {
     console.log(hash);
-
+  //contract.detectNetwork();
+  //Mortgage.detectNetwork();
   Mortgage.deployed().then(function(contractInstance) {
-    contractInstance.addData(hash,{gas: GAS_AMOUNT, from: account}).then(function(result) {
+    contractInstance.addData(web3.utils.fromAscii(hash),{gas: GAS_AMOUNT, from: account}).then(function(result) {
       console.log("HASH ADDED SUCCESSFULLY : ",hash);
     });
   });
@@ -90,7 +91,8 @@ $( document ).ready(function() {
   }
   web3.eth.getAccounts(function(err, accs) {
     account = accs[0];
-    wtoE = web3.toWei(1,'ether');
+    console.log(account);
+    wtoE = web3.utils.toWei('1','ether');
   });
 
   Mortgage.setProvider(web3.currentProvider);

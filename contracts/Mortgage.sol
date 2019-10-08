@@ -13,14 +13,14 @@ contract Mortgage {
   function addData(bytes32 document) public {
     address[] storage owners = ownerMap[document];
     uint i;
-    for(i=0;i<owners.length; i++)
+    for(i = 0; i < owners.length; i++)
     {
       if(owners[i] == msg.sender)
         return;
     }
     ownerMap[document].push(msg.sender);
     uint count = mortgageMap[msg.sender].length;
-    for(i=0;i<count; i++)
+    for(i = 0; i < count; i++)
     {
       if(mortgageMap[msg.sender][i] == document)
         return;

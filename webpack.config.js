@@ -1,5 +1,6 @@
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
   entry: {
@@ -22,7 +23,8 @@ module.exports = {
       { from: './app/usage.html', to: "usage.html" },
       { from: './app/images', to: "images" },
         { from: './app/files', to: "files" }
-    ])
+    ]),
+    new webpack.SourceMapDevToolPlugin({})
   ],
   module: {
     rules: [

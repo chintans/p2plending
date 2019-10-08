@@ -3,7 +3,7 @@
 
 // Import libraries we need.
 import { default as Web3} from 'web3';
-import { default as contract } from 'truffle-contract';
+import { default as contract } from '@truffle/contract';
 
 import bank_artifacts from '../../build/contracts/CrowdBank.json';
 import bank_artifacts2 from '../../build/contracts/Mortgage.json';
@@ -130,7 +130,7 @@ window.lockLoan = function(loanId) {
 window.repayLoan = function(loanId) {
   CrowdBank.deployed().then(function(contractInstance) {
     contractInstance.getRepayValue.call(loanId).then(function(result){
-      var amount = parseInt(result.valueOf()) + parseInt(web3.toWei(1,'ether').valueOf());
+      var amount = parseInt(+result + +web3.utils.toWei("1",'ether'));
       console.log(amount);
       contractInstance.repayLoan(loanId,{gas: GAS_AMOUNT, from: account, value : amount}).then(function(){
         console.log("REPAY DONE SUCCESSFULLY");
@@ -161,7 +161,7 @@ function showPastLoans() {
               <td>'+LOANSTATE[el[0].valueOf()]+'</td>\
               <td>'+new Date(el[1].valueOf()*1000).toDateString()+'</td>\
               <td>'+el[2].valueOf()/wtoE+' eth</td>\
-              <td><a target="_blank" href="/verify.html?hash='+web3.toUtf8(el[5].valueOf())+'">Link</a></td>\
+              <td><a target="_blank" href="/verify.html?hash='+web3.utils.toUtf8(el[5].valueOf())+'">Link</a></td>\
               <td>'+el[3].valueOf()/wtoE+' eth</td>\
               <td><button class="btn btn-default" onclick="showLoanDetails('+el[4].valueOf()+')">Details</button></td>\
               <td>'+LOANSTATEACTION(el[0].valueOf(),el[4].valueOf())+'</td>\
@@ -187,7 +187,7 @@ function getMortgageDetails() {
       for(let i=0;i<count;i++)
       {
         contractInstance.mortgageMap(account,i).then(function(output) {
-          var mortgage = web3.toUtf8(output.valueOf());
+          var mortgage = web3.utils.toUtf8(output.valueOf());
           var newOption = '<option value="'+mortgage+'">'+mortgage+'</option>';
           $('#newloan-mortgage').append(newOption);
         });
@@ -204,7 +204,8 @@ function displayForm() {
 function newLoan(amount, date, mortgage) {
   CrowdBank.deployed().then(function(contractInstance) {
     // contractInstance.defaultAccount = account;
-    contractInstance.newLoan(web3.toWei(amount,'ether'),date,mortgage,{gas: GAS_AMOUNT, from: account}).then(function() {
+    let amountBn = new web3.utils.BN(amount);
+    contractInstance.newLoan(web3.utils.toWei(amountBn),date,web3.utils.fromAscii(mortgage),{gas: GAS_AMOUNT, from: account}).then(function() {
       refreshPage();
     });
   });
@@ -222,12 +223,12 @@ $( document ).ready(function() {
   }
 
   web3.eth.getAccounts(function(err, accs) {
-    wtoE = web3.toWei(1,'ether');
+    wtoE = web3.utils.toWei('1','ether');
     account = accs[0];
     $('#account-number').html(account);
     web3.eth.getBalance(account, function (error, result) {
       if (!error) {
-        $('#account-balance').html(result.toNumber()/wtoE);
+        $('#account-balance').html(+result/wtoE);
       } else {
         console.error(error);
       }

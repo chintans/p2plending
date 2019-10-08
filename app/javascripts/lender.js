@@ -3,7 +3,7 @@
 
 // Import libraries we need.
 import { default as Web3} from 'web3';
-import { default as contract } from 'truffle-contract'
+import { default as contract } from '@truffle/contract';
 
 import bank_artifacts from '../../build/contracts/CrowdBank.json'
 
@@ -64,7 +64,7 @@ function populateProposals() {
             <td>" + el[1].valueOf() + "</td>\
             <td>" + el[5].valueOf()/wtoE + " eth</td>\
             <td>"+new Date(el[6].valueOf()*1000).toDateString()+"</td>\
-            <td><a target='_blank' href='http://mortgage.crowdbank.gov.in:8080/verify.html?hash="+web3.toUtf8(el[7].valueOf())+"'>Link</a></td>\
+            <td><a target='_blank' href='http://localhost:8080/verify.html?hash="+web3.utils.toUtf8(el[7].valueOf())+"'>Link</a></td>\
             <td>" + PROPOSALSTATE[el[2].valueOf()]  + "</td>\
             <td>" + el[3].valueOf() + "</td>\
             <td>" + el[4].valueOf()/wtoE + "</td>\
@@ -81,7 +81,7 @@ window.proposeLend = function(id) {
   var rate = $('#lendrate'+id).val();
   console.log("Lending " + amount + " Ether to LoanId " + id);
   CrowdBank.deployed().then(function(contractInstance) {
-    contractInstance.newProposal(id, rate, {value: web3.toWei(amount,'ether'), from: account, gas: 2000000}).then(function(transaction) {
+    contractInstance.newProposal(id, rate, {value: web3.utils.toWei(amount,'ether'), from: account, gas: 2000000}).then(function(transaction) {
         console.log(transaction);
         refreshPage();
     });
@@ -116,7 +116,7 @@ function populateRecentLoans() {
             <td>" + LOANSTATE[el[1].valueOf()] + "</td>\
             <td>" + new Date(el[2].valueOf()*1000).toDateString() + "</td>\
             <td>" + el[3].valueOf()/wtoE + "</td>\
-            <td><a target='_blank' href='http://mortgage.crowdbank.gov.in:8080/verify.html?hash="+web3.toUtf8(el[7].valueOf())+"'>Link</a></td>\
+            <td><a target='_blank' href='http://localhost:8080/verify.html?hash="+web3.utils.toUtf8(el[7].valueOf())+"'>Link</a></td>\
             <td>" + amountHTML  + "</td>\
             <td>" + rateHTML  + "</td>\
             <td>" + btnHTML  + "</td>\
@@ -139,12 +139,13 @@ function getBalance (address) {
 
 function refreshPage() {
   web3.eth.getAccounts(function(err, accs) {
-    wtoE = web3.toWei(1,'ether');
+    wtoE = web3.utils.toWei("1",'ether');
     account = accs[0];
     $('#account-number').html(account);
     web3.eth.getBalance(account, function (error, result) {
+      console.log(result);
       if (!error) {
-        $('#account-balance').html(result.toNumber()/wtoE);
+        $('#account-balance').html( +result/wtoE);
       } else {
         console.error(error);
       }
